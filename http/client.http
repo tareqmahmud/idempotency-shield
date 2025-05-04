@@ -1,0 +1,12 @@
+### Get reuest for root api
+GET http://localhost:3000
+
+### Payment using client based idempotency key
+POST http://localhost:3000/payment
+Content-Type: application/json
+Idempotency-Key: sdfjnksjdf324324q34 // Unique UUID
+
+{
+  "amount": 1000,
+  "orderId": 123456
+}

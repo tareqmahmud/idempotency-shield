@@ -1,0 +1,22 @@
+{
+  "name": "idempotency-shield",
+  "module": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch app.js --exec bun app.js"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.12",
+    "nodemon": "^3.1.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.4",
+    "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.43.1",
+    "express": "^5.1.0"
+  }
+}
