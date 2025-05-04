@@ -1,6 +1,6 @@
 import express from 'express';
 import { drizzle } from 'drizzle-orm/libsql';
-import { idempotencyKeysClient, paymentsClient } from "./src/database/schema.js";
+import { idempotencyKeys, payments } from "./src/database/schema.js";
 import { createClient } from "@libsql/client";
 import { and, eq } from "drizzle-orm";
 
@@ -89,8 +89,8 @@ app.post('/payment', async (req, res) => {
 async function checkIdempotencyKey(key) {
   const result = await db
     .select()
-    .from(idempotencyKeysClient)
-    .where(eq(idempotencyKeysClient.key, key))
+    .from(idempotencyKeys)
+    .where(eq(idempotencyKeys.key, key))
     .execute();
   return result.length > 0 ? result[0] : null;
 }
@@ -98,15 +98,15 @@ async function checkIdempotencyKey(key) {
 async function isOrderAlreadyPaid(orderId) {
   const result = await db
     .select()
-    .from(paymentsClient)
-    .where(and(eq(paymentsClient.orderId, orderId), eq(paymentsClient.status, 'paid')))
+    .from(payments)
+    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'paid')))
     .execute();
   return result.length > 0;
 }
 
 async function storeIdempotencyKey(key) {
   return db
-    .insert(idempotencyKeysClient)
+    .insert(idempotencyKeys)
     .values({key})
     .execute();
 }
@@ -114,23 +114,23 @@ async function storeIdempotencyKey(key) {
 async function getPendingPayment(orderId) {
   const result = await db
     .select()
-    .from(paymentsClient)
-    .where(and(eq(paymentsClient.orderId, orderId), eq(paymentsClient.status, 'pending')))
+    .from(payments)
+    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'pending')))
     .execute();
   return result.length > 0 ? result[0] : null;
 }
 
 async function updatePaymentToPaid(orderId) {
   return db
-    .update(paymentsClient)
+    .update(payments)
     .set({status: 'paid'})
-    .where(and(eq(paymentsClient.orderId, orderId), eq(paymentsClient.status, 'pending')))
+    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'pending')))
     .execute();
 }
 
 async function createPayment(amount, orderId) {
   const result = await db
-    .insert(paymentsClient)
+    .insert(payments)
     .values({
       amount, orderId, status: 'paid'
     })
