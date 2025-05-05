@@ -1,5 +1,6 @@
 import express from 'express';
 import clientIdempotencyRouter from "./src/router/clientIdempotencyRouter.js";
+import serverIdempotencyRouter from "./src/router/serverIdempotencyRouter.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.get('/', (req, res) => {
   })
 });
 
+app.use('/', serverIdempotencyRouter);
 app.use('/', clientIdempotencyRouter);
 
 // Global error handler

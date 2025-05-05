@@ -1,0 +1,12 @@
+### Get new idempotency key from server
+GET http://localhost:3000/idempotency-key
+
+### Payment with idempotency key
+POST http://localhost:3000/server-payment
+Content-Type: application/json
+Idempotency-Key: 5c8b45e6-0b5c-4efe-bc6c-9eb6bf67e79e // Unique UUID that is retrieved from the server
+
+{
+  "amount": 1000,
+  "orderId": 123451
+}
