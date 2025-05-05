@@ -1,6 +1,3 @@
-### Get reuest for root api
-GET http://localhost:3000
-
 ### Payment using client based idempotency key
 POST http://localhost:3000/client-payment
 Content-Type: application/json

@@ -1,6 +1,5 @@
-import { idempotencyKeys, payments } from "../database/schema.js";
-import { and, eq } from "drizzle-orm";
-import { db } from "../database/db.js";
+import { createPayment, getPendingPayment, isOrderAlreadyPaid, updatePaymentToPaid } from "../query/paymentQuery.js";
+import { checkIdempotencyKey, storeIdempotencyKey } from "../query/idempotencyQuery.js";
 
 export const clientBasedPayment = async (req, res) => {
   try {
@@ -64,58 +63,4 @@ export const clientBasedPayment = async (req, res) => {
       message: 'Failed to process payment', error: error.message
     });
   }
-}
-
-// Helper functions for database operations
-async function checkIdempotencyKey(key) {
-  const result = await db
-    .select()
-    .from(idempotencyKeys)
-    .where(eq(idempotencyKeys.key, key))
-    .execute();
-  return result.length > 0 ? result[0] : null;
-}
-
-async function isOrderAlreadyPaid(orderId) {
-  const result = await db
-    .select()
-    .from(payments)
-    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'paid')))
-    .execute();
-  return result.length > 0;
-}
-
-async function storeIdempotencyKey(key) {
-  return db
-    .insert(idempotencyKeys)
-    .values({key})
-    .execute();
-}
-
-async function getPendingPayment(orderId) {
-  const result = await db
-    .select()
-    .from(payments)
-    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'pending')))
-    .execute();
-  return result.length > 0 ? result[0] : null;
-}
-
-async function updatePaymentToPaid(orderId) {
-  return db
-    .update(payments)
-    .set({status: 'paid'})
-    .where(and(eq(payments.orderId, orderId), eq(payments.status, 'pending')))
-    .execute();
-}
-
-async function createPayment(amount, orderId) {
-  const result = await db
-    .insert(payments)
-    .values({
-      amount, orderId, status: 'paid'
-    })
-    .returning()
-    .execute();
-  return result[0];
 }
