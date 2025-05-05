@@ -2,11 +2,11 @@
 GET http://localhost:3000
 
 ### Payment using client based idempotency key
-POST http://localhost:3000/payment
+POST http://localhost:3000/client-payment
 Content-Type: application/json
-Idempotency-Key: sdfjnksjdf324324q34 // Unique UUID
+Idempotency-Key: sdfjnksjdf324324q35 // Unique UUID
 
 {
   "amount": 1000,
-  "orderId": 123456
+  "orderId": 123451
 }

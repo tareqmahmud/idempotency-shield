@@ -94,7 +94,7 @@ web_modules/
 
 # Database
 db.sqlite
-drazzle/
+drizzle/
 
 *.tgz
 
